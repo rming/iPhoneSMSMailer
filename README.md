@@ -39,6 +39,3 @@ Rming:~ root# sqlite3 --version
 
 需要修改脚本中smtp设置`smtpConfig` 和 接受者`reviever` 
 
-
-#已知问题
-iMessage 无法正确获取消息内容
