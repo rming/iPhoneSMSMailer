@@ -6,6 +6,7 @@ iPhone收到短信时发送邮件到指定邮箱
 
 - iPhone5S 
 - Python2.7
+- sqlite3 3.7.13
 
 ```
 Rming:~ root# cat  /System/Library/CoreServices/SystemVersion.plist
@@ -31,6 +32,10 @@ Python 2.7.3 (default, Aug 11 2012, 10:54:38)
 [GCC 4.2.1 Compatible Apple Clang 3.0 (tags/Apple/clang-211.11)] on darwin
 ```
 
+```
+Rming:~ root# sqlite3 --version
+3.7.13
+```
 
 需要修改脚本中smtp设置`smtpConfig` 和 接受者`reviever` 
 

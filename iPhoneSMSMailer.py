@@ -17,11 +17,12 @@ class iPhoneSMSMailer:
         s.login(smtpConf['email'], smtpConf['pass'])
         return s
 
-    def sendEmail(self, fromNum, smsText):
+    def sendEmail(self, fromNum, smsText, msgType):
         smtp     = self.loginSMTP()
         smtpConf = self.smtpConfig
         if not smsText: smsText = ""
-        msg = MIMEText("From: "+ str(fromNum) +"\nText: "+ smsText.encode("UTF-8"))
+        msgContent = "From: "+ str(fromNum) + "\nType: " + msgType + "\nText: "+ smsText.encode("UTF-8")
+        msg = MIMEText(msgContent)
         msg['Subject'] = "New SMS Message"
         msg['From']    = smtpConf['email']
         msg['To']      = self.reviever
@@ -47,20 +48,22 @@ class iPhoneSMSMailer:
     def run(self):
         self.conn = self.getDBConn()
         cu        = self.conn.cursor()
-        selectSQL   = "SELECT text,handle_id,is_from_me,is_read  FROM message WHERE is_from_me=0 AND is_read=0"
+        selectSQL   = "SELECT text,handle_id,type,is_from_me,is_read  FROM message WHERE is_from_me=0 AND is_read=0"
         updateSQL   = "UPDATE message SET is_read=1 WHERE is_from_me=0 AND is_read=0"
         while True:
             cu.execute(selectSQL)
             res = cu.fetchall()
             if len(res) > 0:
                 for k in range(len(res)):
-                    handleId = res[k][1];
+                    handleId = res[k][1]
                     smsText  = res[k][0]
+                    msgType  = res[k][2]
+                    print smsText
                     try:
                         fromNum  = self.queryNum(handleId, cu)
                     except:
                         fromNum  = "UNKNOWN"
-                    self.sendEmail(fromNum, smsText)
+                    self.sendEmail(fromNum, smsText, msgType)
                 cu.execute(updateSQL)
                 self.conn.commit()
             time.sleep(20)
